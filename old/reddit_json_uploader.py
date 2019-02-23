@@ -25,23 +25,28 @@ with open('RC_2010-07', 'r') as allcomments:
     index = 0
     for comment_text in allcomments:
         comment = json.loads(comment_text)
-        cursor.execute('INSERT INTO comments (id, body, year, score, parent_id, link_id) \
-            VALUES (%s, %s, %s, %s, %s, %s)',
-            (comment['id'], comment['body'], 2010, comment['score'], comment['parent_id'], comment['link_id']))
+        #cursor.execute('INSERT INTO comments (id, body, year, score, parent_id, link_id) \
+        #    VALUES (%s, %s, %s, %s, %s, %s)',
+        #    (comment['id'], comment['body'], 2010, comment['score'], comment['parent_id'], comment['link_id']))
 
         index = index + 1
         if index % 1000 == 0:
             print(index)
-            conn.commit()
+            #conn.commit()
+#conn.commit()
+
+cursor.execute('\\copy ')
 conn.commit()
+
 """
 DROP TABLE IF EXISTS parentsrc;
 CREATE TABLE parentsrc AS SELECT * FROM comments;
+ALTER TABLE parentsrc DROP COLUMN plainparent;
 CREATE INDEX parentid ON parentsrc (id);
 CLUSTER parentsrc USING parentid;
 ANALYZE parentsrc;
 
-ALTER TABLE comments ADD COLUMN plainparent VARCHAR(20);
+ALTER TABLE comments ADD COLUMN IF NOT EXISTS plainparent VARCHAR(20);
 UPDATE comments SET plainparent = SUBSTR(parent_id, 4);
 
 UPDATE comments SET parent_score = (
@@ -49,9 +54,14 @@ UPDATE comments SET parent_score = (
 )
 WHERE plainparent IN (SELECT id FROM comments);
 
+SELECT COUNT(*) FROM comments WHERE score > parent_score;
+SELECT COUNT(*) FROM comments WHERE score > parent_score * 1.5;
+
 SELECT COUNT(*), TRIM(LOWER(body))
     FROM comments
-    WHERE score > parent_score
+    WHERE score > parent_score * 1.5
+        AND parent_score > 0
     GROUP BY TRIM(LOWER(body))
-    ORDER BY COUNT(*) DESC;
+    ORDER BY COUNT(*) DESC
+    LIMIT 15;
 """

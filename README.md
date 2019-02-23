@@ -1,8 +1,7 @@
 # DeepClapback
 
-- Download from AcademicTorrents
-- initdb postgresfolder
-- postgres -D postgresfolder/
-- createdb reddit
-- pip install psycopg2
-- python reddit_json_uploader.py (this takes a while, > 4 million comments for July 2010 alone)
+## Running with cloud services
+- sudo apt-get install python3-pip
+- cd /mnt/DISK
+- bzip -d /mnt/DISK/reddit_data/year/RC_YEAR-MONTH.bz2
+- python reddit_json_converter.py
