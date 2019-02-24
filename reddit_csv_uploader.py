@@ -17,11 +17,6 @@ for y in [2016]:
         progress.write('ok')
         progress.close()
 
-        cursor.execute('CREATE TABLE comments_' + year + '_' + month + ' AS (SELECT id, body, score, parent_id FROM comments_' + year + '_' + month + ' LIMIT 0)')
-        f = open(year + '_' + month + '.csv')
-        cursor.copy_from(f, 'comments_' + year + '_' + month, columns=('id', 'body', 'score', 'parent_id'))
-        conn.commit()
-
         cursor.execute('ALTER TABLE comments_' + year + '_' + month + ' ADD yyyymm INT')
         cursor.execute('UPDATE comments_' + year + '_' + month + ' SET yyyymm = ' + year + month + '')
         conn.commit()
