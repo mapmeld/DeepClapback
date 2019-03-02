@@ -13,9 +13,8 @@ for y in [2016]:
         if len(month) == 1:
             month = '0' + month
 
-        progress = open(year + '_' + month + '.started', 'w')
-        progress.write('ok')
-        progress.close()
+        cursor.execute('DELETE FROM comments_' + year + '_' + month + ' WHERE body = \'[removed]\' OR body = \'[deleted]\'')
+        cursor.execute('CREATE INDEX comments_' + year + '_' + month + '_idx ON comments_' + year + '_' + month + ' (id)')
 
         cursor.execute('ALTER TABLE comments_' + year + '_' + month + ' ADD yyyymm INT')
         cursor.execute('UPDATE comments_' + year + '_' + month + ' SET yyyymm = ' + year + month + '')
@@ -23,7 +22,7 @@ for y in [2016]:
 
         cursor.execute('ALTER TABLE comments_' + year + '_' + month + ' ADD plainparent VARCHAR(20)')
         cursor.execute('UPDATE comments_' + year + '_' + month + ' SET plainparent = SUBSTR(parent_id, 4)')
-        cursor.execute('CREATE TABLE comment_ids_' + year + '_' + month + ' AS (SELECT id, score FROM comments' + year + '_' + month)
+        cursor.execute('CREATE TABLE comment_ids_' + year + '_' + month + ' AS (SELECT id, score FROM comments_' + year + '_' + month + ')')
             #>x< INSERT INTO comment_ids_2017 (id, score) VALUES (SELECT id, score FROM comments_2017_02);
         cursor.execute('CREATE INDEX idstr' + year + '_' + month + ' ON comment_ids_' + year + '_' + month + ' (id)')
         cursor.execute('CLUSTER comment_ids_' + year + '_' + month + ' USING idstr' + year + '_' + month)
@@ -45,7 +44,7 @@ for y in [2016]:
         cursor.execute('UPDATE comments_' + year + '_' + month + ' SET is_clapback = TRUE WHERE (comment_was_better = TRUE) AND score > 7 AND parent_score > 0 AND score > parent_score * 1.5')
 
         cursor.execute('ALTER TABLE comments_' + year + '_' + month + ' ADD is_relevant_parent BOOLEAN')
-        cursor.execute('UPDATE comments_' + year + '_' + month + ' SET is_relevant_parent = TRUE WHERE (comment_was_better IS NULL) AND id IN (SELECT parent_id FROM comments_' + year + '_' + month + ' WHERE comment_was_better = TRUE)')
+        cursor.execute('UPDATE comments_' + year + '_' + month + ' SET is_relevant_parent = TRUE WHERE (comment_was_better IS NULL) AND id IN (SELECT plainparent FROM comments_' + year + '_' + month + ' WHERE comment_was_better = TRUE)')
         conn.commit()
 
         cursor.execute('DELETE FROM comments_' + year + '_' + month + ' WHERE (comment_was_better IS NULL) AND (is_relevant_parent IS NULL)')
