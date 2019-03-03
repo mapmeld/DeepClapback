@@ -1,3 +1,4 @@
 RC_*
 .DS_Store
 *.pyc
+*.csv
