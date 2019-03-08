@@ -25,19 +25,19 @@ for line in lines:
             standardphrase = 'throwstable'
         if '_(ツ)_' in phrase:
             standardphrase = 'shrug'
-        if 'datboi' in phrase:
+        if 'datboi' in standardphrase:
             standardphrase = 'datboi'
-        if 'thatsthejoke' in phrase:
+        if 'thatsthejoke' in standardphrase:
             standardphrase = 'thatsthejoke'
-        if 'checksout' in phrase:
+        if 'checksout' in standardphrase:
             standardphrase = 'xchecksout'
-        if 'shitwaddup' in phrase:
+        if 'shitwaddup' in standardphrase:
             standardphrase = 'ohshitwaddup'
         if standardphrase == 'woosh' or standardphrase == 'whoosh':
             standardphrase = 'woosh'
         if standardphrase == 'thanks' or standardphrase == 'thankyou':
             standardphrase = 'thanks'
-        if standardphrase == 'haha' or standardphrase == 'lol':
+        if standardphrase == 'haha':
             standardphrase = 'lol'
 
         if not standardphrase.replace('"', '').isalnum():
