@@ -1,4 +1,9 @@
-# DeepClapback
+# New repo: https://github.com/Georeactor/reddit-one-ups
+
+Datasets: https://huggingface.co/datasets?search=georeactor+one_ups
+
+
+## DeepClapback
 
 A Reddit comment dataset which searches for 'clapbacks' (comments
  which are scored higher than the original comments) and
